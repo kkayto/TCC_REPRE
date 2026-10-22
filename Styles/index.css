@@ -1,0 +1,226 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #f0eef8;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+/* Livros Caindo */
+.bg-books {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.book {
+    position: absolute;
+    top: -60px;
+    animation: fall linear infinite;
+    will-change: transform;
+}
+
+@keyframes fall {
+    0% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    100% {
+        transform: translateY(110vh) rotate(360deg);
+    }
+}
+
+@keyframes fade-down {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade {
+    opacity: 0;
+    animation: fade-down 0.6s ease both;
+}
+
+/*@media (prefers-reduced-motion: reduce) {
+    .book {
+        animation: none;
+        display: none;
+    }
+
+    .fade {
+        animation: none;
+        opacity: 1;
+    }
+}
+*/
+header {
+    background-color: #ebe9f5;
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    width: 100vw;
+    gap: 10px;
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--slate-700);
+    letter-spacing: 0.02em;
+    margin-bottom: 20px;
+}
+
+
+
+main {
+    /* Flex:1 serve pra ocupar todo o espaço restante do container */
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 20px;
+}
+
+.caixinha {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(203, 213, 225, 0.4);
+    padding: 8px 16px;
+    border-radius: 100px;
+    backdrop-filter: blur(4px);
+    margin: 10px 15px 0px;
+}
+i.fa-solid.fa-user-graduate{
+    font-size: 25px;
+   }
+
+h1 {
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--slate-700);
+    max-width: 720px;
+}
+
+h1 .marcacao {
+    color: #584391;
+}
+
+.subtitle {
+    margin-top: 16px;
+    font-size: 18px;
+    color: rgb(100 116 139);
+    max-width: 560px;
+    line-height: 1.6;
+    animation-delay: 0.2s;
+    margin-bottom: 32px;
+    text-align: justify;
+    margin: 0px 15px;
+}
+
+.actions {
+    padding-top: 20px;
+    display: flex;
+    gap: 16px;
+    flex-direction: column;
+    width: 93%;
+}
+
+.btn {
+   
+    font-size: 16px;
+    font-weight: 700;
+    padding: 18px;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-entrar {
+    background-color: #584391;
+    color: #ffffff;
+}
+
+.btn-entrar:hover {
+    background-color: #452d7a;
+    box-shadow: 0 6px 20px rgba(88, 67, 145, 0.3);
+    transform: translateY(-1px);
+}
+
+.btn-cadastrar {
+    background-color: #fff;
+    color: #584391;
+}
+
+.btn-cadastrar:hover {
+    box-shadow: 0 6px 20px rgba(88, 67, 145, 0.3);
+    transform: translateY(-1px);
+}
+
+footer {
+    margin-top: 20px;
+    text-align: center;
+    padding: 20px 0;
+    font-size: 12px;
+    color: rgb(100 116 139);
+    top: 27vh;
+}
+
+@media (min-width: 768px) {
+   body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+   }
+   .subtitle{
+    text-align: center;
+   }
+   .actions{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+   }
+   .btn{
+    width: 45%;
+   }
+   i.fa-solid.fa-user-graduate{
+    font-size: 20px;
+   }
+   h1{
+    font-size: 40px;
+   }
+}
+@media (min-width: 1200px){
+    main{
+        gap:50px;
+    }
+    h1{
+        font-size: 50px;
+    }
+    .caixinha, .subtitle, .btn{
+        font-size: 20px;
+    }
+}
