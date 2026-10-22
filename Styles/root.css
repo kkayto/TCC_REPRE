@@ -1,0 +1,24 @@
+:root {
+    --main-purple: #584391;
+    --brand-purple: rgba(109, 66, 219, 1);
+    --light-purple: #7351df;
+    --soft-purple: #f1edff;
+
+    --title-blue: #17245c;
+    --text-blue: #101d52;
+    --secondary-blue: #59658c;
+
+    --background: #f0eef8;
+    --white: #ffffff;
+    --border: #e2e3ef;
+
+    --shadow: 0 4px 20px rgba(31, 37, 70, .06);
+    --shadow-hover: 0 8px 28px rgba(109, 66, 219, .12);
+    --button-shadow: 0 6px 20px rgba(88, 67, 145, 0.3);
+
+    --radius: 14px;
+    --input-radius: 16px;
+    --card-radius: 18px;
+    --large-radius: 20px;
+    --pill-radius: 100px;
+}
