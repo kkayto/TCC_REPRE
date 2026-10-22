@@ -1,0 +1,125 @@
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: #ececff;
+            font-family: Arial, sans-serif;
+            color: #1f2546;
+        }
+
+        .container {
+            width: min(900px, calc(100% - 40px));
+            margin: 50px auto;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 22px;
+            padding: 35px;
+            box-shadow: 0 8px 25px rgba(70, 60, 130, .10);
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            font-size: 30px;
+        }
+
+        .subtitulo {
+            margin: 0 0 30px;
+            color: #686b80;
+        }
+
+        .campo {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            border: 1px solid #d9d6e8;
+            border-radius: 12px;
+            padding: 13px 15px;
+            font-size: 15px;
+            font-family: inherit;
+            outline: none;
+            background: #fff;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #6d42db;
+        }
+
+        textarea {
+            min-height: 180px;
+            resize: vertical;
+        }
+
+        .erro {
+            background: #ffe8e8;
+            color: #a52626;
+            border-radius: 12px;
+            padding: 13px 15px;
+            margin-bottom: 20px;
+        }
+
+        .checkbox {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkbox input {
+            width: auto;
+        }
+
+        .botoes {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            border: 0;
+            border-radius: 12px;
+            padding: 13px 22px;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-voltar {
+            background: #eeeeF5;
+            color: #34364a;
+        }
+
+        .btn-salvar {
+            background: #6d42db;
+            color: #fff;
+        }
+
+        .btn-salvar:hover {
+            background: #5932c1;
+        }
+
+        .info {
+            background: #f4f1ff;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 25px;
+            color: #51477a;
+        }
