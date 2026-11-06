@@ -11,10 +11,42 @@ $oldEmail = '';
 $oldTipo = '';
 
 if (!empty($_SESSION['user_id'])) {
-    redirect('home.php');
+
+    $tipo = $_SESSION['user_tipo'] ?? '';
+
+    if ($tipo === 'representante') {
+
+        $pdo = db();
+
+        $stmt = $pdo->prepare("
+            SELECT turma_id
+            FROM turma_membros
+            WHERE aluno_id = :usuario_id
+              AND papel = 'representante'
+            LIMIT 1
+        ");
+
+        $stmt->execute([
+            'usuario_id' => (int) $_SESSION['user_id']
+        ]);
+
+        if ($stmt->fetch(PDO::FETCH_ASSOC)) {
+            redirect('home.php');
+        } else {
+            redirect('criarTurmaSala.php');
+        }
+
+        exit;
+    }
+
+    if ($tipo === 'aluno') {
+        redirect('entrarTurma.php');
+        exit;
+    }
+
+    redirect('login.php');
     exit;
 }
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $oldName = trim((string) ($_POST['name'] ?? ''));
@@ -23,17 +55,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $oldTipo = (string) ($_POST['tipo'] ?? '');
 
     try {
-
         // Verifica o token de segurança
         verify_csrf();
 
-        // Tipos de conta aceitos
+        // Tipos de conta permitidos
         $tiposPermitidos = [
             'aluno',
             'representante'
         ];
 
-        // Validação dos dados
+        // Validações
         if (!in_array($oldTipo, $tiposPermitidos, true)) {
 
             $error = 'Selecione um tipo de conta válido.';
@@ -60,9 +91,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             strlen($senha) < 8 ||
             strlen($senha) > 72
         ) {
+
             $error = 'A senha deve ter entre 8 e 72 bytes.';
+
         } else {
+
             $pdo = db();
+
+            // Verifica se o e-mail já existe
             $check = $pdo->prepare(
                 'SELECT id
                  FROM alunos
@@ -73,19 +109,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $check->execute([
                 'email' => $oldEmail
             ]);
+
             if ($check->fetch(PDO::FETCH_ASSOC)) {
+
                 $error = 'Este e-mail já está cadastrado.';
+
             } else {
+
+                // Cria o hash seguro da senha
                 $hash = password_hash($senha, PASSWORD_DEFAULT);
+
                 if ($hash === false) {
                     throw new RuntimeException(
                         'Não foi possível gerar o hash da senha.'
                     );
                 }
-                $statusConta = ($oldTipo === 'aluno')
-                    ? 'ativo'
-                    : 'pendente';
-                
+
+                // Todos os tipos de conta começam ativos
+                $statusConta = 'ativo';
+
+                // Cadastra o usuário
                 $stmt = $pdo->prepare(
                     'INSERT INTO alunos (
                         nome,
@@ -109,6 +152,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'tipo' => $oldTipo,
                     'status_conta' => $statusConta
                 ]);
+
+                // Após o cadastro, segue para o login
                 redirect('login.php');
                 exit;
             }
@@ -329,4 +374,3 @@ document.addEventListener('DOMContentLoaded', function () {
 
 </body>
 </html>
-```

@@ -5,7 +5,6 @@ error_reporting(E_ALL);
 
 require_once __DIR__ . '/Settings/auth.php';
 require_login();
-require_once __DIR__ . '/atividades.php';
 
 $alunoId = (int) ($_SESSION['user_id'] ?? 0);
 
@@ -24,84 +23,68 @@ $totalConcluidas = 0;
 
 try {
     $pdo = db();
+$sql = "
+    SELECT
+        a.id,
+        a.titulo,
+        a.descricao,
+        a.tipo,
+        a.data_limite,
+        d.nome AS disciplina,
+        d.cor_hex,
+        e.atividade_id AS atividade_concluida
+    FROM atividades a
+    INNER JOIN turma_disciplinas td
+        ON td.id = a.turma_disciplina_id
+    INNER JOIN disciplinas d
+        ON d.id = td.disciplina_id
+    INNER JOIN turma_membros tm
+        ON tm.turma_id = td.turma_id
+    LEFT JOIN entregas e
+        ON e.atividade_id = a.id
+       AND e.aluno_id = tm.aluno_id
+    WHERE tm.aluno_id = :aluno_id
+      AND a.status = 'publicada'
+    ORDER BY
+        a.data_limite IS NULL ASC,
+        a.data_limite ASC,
+        a.id DESC
+";
 
-    $sql = "
-        SELECT
-            a.id,
-            a.titulo,
-            a.descricao,
-            a.tipo,
-            a.data_limite,
-            d.nome AS disciplina,
-            d.cor_hex,
-            e.status AS status_entrega,
-            e.enviado_em
-        FROM atividades a
-        INNER JOIN turma_disciplinas td
-            ON td.id = a.turma_disciplina_id
-        INNER JOIN disciplinas d
-            ON d.id = td.disciplina_id
-        INNER JOIN turma_membros tm
-            ON tm.turma_id = td.turma_id
-           AND tm.aluno_id = :aluno_id
-        LEFT JOIN entregas e
-            ON e.atividade_id = a.id
-           AND e.aluno_id = :aluno_id_entrega
-        WHERE a.status = 'publicada'
-        ORDER BY
-            a.data_limite IS NULL ASC,
-            a.data_limite ASC,
-            a.id DESC
-    ";
+$stmt = $pdo->prepare($sql);
 
+$stmt->execute([
+    ':aluno_id' => $alunoId
+]);
+
+$resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt = $pdo->prepare($sql);
-
-    $stmt->execute([
-        'aluno_id' => $alunoId,
-        'aluno_id_entrega' => $alunoId
-    ]);
-
+    $stmt->execute(['aluno_id' => $alunoId]);
     $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    foreach ($resultados as $atividade) {
-        $statusEntrega = $atividade['status_entrega'] ?? 'pendente';
-        $dataLimite = $atividade['data_limite'];
-
-        if (in_array($statusEntrega, ['entregue', 'corrigida'], true)) {
-            $status = 'concluida';
-        } elseif (
-            $statusEntrega === 'atrasada' ||
-            (
-                in_array($statusEntrega, ['pendente', 'devolvida'], true) &&
-                $dataLimite !== null &&
-                strtotime($dataLimite) < time()
-            )
-        ) {
-            $status = 'atrasada';
-        } else {
-            $status = 'pendente';
-        }
-
-        $atividade['status_calculado'] = $status;
-
-        if ($status === 'concluida') {
-            $totalConcluidas++;
-        } elseif ($status === 'atrasada') {
-            $totalAtrasadas++;
-        } else {
-            $totalPendentes++;
-        }
-
-        $materias[$atividade['disciplina']] = $atividade['disciplina'];
-        $atividades[] = $atividade;
+foreach ($resultados as $atividade) {
+    if ($atividade['atividade_concluida'] !== null) {
+        $status = 'concluida';
+        $totalConcluidas++;
+    } elseif (
+        !empty($atividade['data_limite']) &&
+        strtotime($atividade['data_limite']) < time()
+    ) {
+        $status = 'atrasada';
+        $totalAtrasadas++;
+    } else {
+        $status = 'pendente';
+        $totalPendentes++;
     }
-
-    natcasesort($materias);
+    $atividade['status_calculado'] = $status;
+    $materias[$atividade['disciplina']] = $atividade['disciplina'];
+    $atividades[] = $atividade;
+}
+natcasesort($materias);
 
 } catch (Throwable $e) {
     error_log('[REPRE] Erro ao carregar atividades: ' . $e->getMessage());
-
-    $erroAtividades = 'Não foi possível carregar suas atividades. Tente novamente mais tarde.';
+    $erroAtividades = 'Erro ao carregar: ' . $e->getMessage();
 }
 
 function formatarDataAtividade(?string $data): string
@@ -222,7 +205,7 @@ function iconeAtividade(string $tipo): string
                     </div>
 
                     <span class="activities-counter">
-                        7 tarefas
+                      
                     </span>
                 </div>
 
@@ -295,44 +278,38 @@ function iconeAtividade(string $tipo): string
             ?>
 
             <article
-                class="activity-card"
-                data-materia="<?= e($atividade['disciplina']) ?>"
-                data-data="<?= e($atividade['data_limite'] ?? '') ?>"
-                data-status="<?= e($rotulosStatus[$status]) ?>"
-            >
+    class="activity-card"
+    style="cursor: pointer;"
+    onclick="window.location.href='detalhesAtividade.php?id=<?= (int) $atividade['id'] ?>'"
+    data-materia="<?= e($atividade['disciplina']) ?>"
+    data-data="<?= e($atividade['data_limite'] ?? '') ?>"
+    data-status="<?= e($rotulosStatus[$status]) ?>"
+>
 
-                <div class="activity-icon purple">
-                    <i class="fa-solid <?= e(iconeAtividade($atividade['tipo'])) ?>"></i>
-                </div>
+    <div class="activity-icon purple">
+        <i class="fa-solid <?= e(iconeAtividade($atividade['tipo'])) ?>"></i>
+    </div>
 
-                <div class="activity-info">
-                    <span class="activity-subject">
-                        <?= e($atividade['disciplina']) ?>
-                    </span>
+    <div class="activity-info">
+        <span class="activity-subject">
+            <?= e($atividade['disciplina']) ?>
+        </span>
 
-                    <h3><?= e($atividade['titulo']) ?></h3>
-                </div>
+        <h3><?= e($atividade['titulo']) ?></h3>
+    </div>
 
-                <div class="activity-date">
-                    <i class="fa-regular fa-calendar"></i>
-                    <?= e(formatarDataAtividade($atividade['data_limite'])) ?>
-                </div>
+    <div class="activity-date">
+        <i class="fa-regular fa-calendar"></i>
+        <?= e(formatarDataAtividade($atividade['data_limite'])) ?>
+    </div>
 
-                <span class="activity-status <?= e($classesStatus[$status]) ?>">
-                    <?= e($rotulosStatus[$status]) ?>
-                </span>
+    <span class="activity-status <?= e($classesStatus[$status]) ?>">
+        <?= e($rotulosStatus[$status]) ?>
+    </span>
 
-                <button
-                    type="button"
-                    class="activity-more"
-                    aria-label="Opções da atividade"
-                    title="Opções da atividade"
-                >
-                    <i class="fa-solid fa-ellipsis-vertical"></i>
-                </button>
+  
 
-            </article>
-
+</article>
         <?php endforeach; ?>
 
     <?php endif; ?>

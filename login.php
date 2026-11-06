@@ -5,17 +5,71 @@ error_reporting(E_ALL);
 
 require_once __DIR__ . '/Settings/auth.php';
 
+/*Verifica se o usuário já está conectado*/
+/* Verifica se o usuário já está conectado */
 if (!empty($_SESSION['user_id'])) {
+
+    $tipo = $_SESSION['user_tipo'] ?? '';
+
+    if ($tipo === 'representante') {
+
+        $stmt = db()->prepare("
+            SELECT turma_id
+            FROM turma_membros
+            WHERE aluno_id = :usuario_id
+              AND papel = 'representante'
+            LIMIT 1
+        ");
+
+        $stmt->execute([
+            'usuario_id' => (int) $_SESSION['user_id']
+        ]);
+
+        if (!$stmt->fetch(PDO::FETCH_ASSOC)) {
+            redirect('criarTurmaSala.php');
+            exit;
+        }
+
+        redirect('home.php');
+        exit;
+    }
+
+    if ($tipo === 'aluno') {
+
+        $stmt = db()->prepare("
+            SELECT turma_id
+            FROM turma_membros
+            WHERE aluno_id = :usuario_id
+              AND papel = 'aluno'
+            LIMIT 1
+        ");
+
+        $stmt->execute([
+            'usuario_id' => (int) $_SESSION['user_id']
+        ]);
+
+        if (!$stmt->fetch(PDO::FETCH_ASSOC)) {
+            redirect('entrarTurma.php');
+            exit;
+        }
+
+        redirect('home.php');
+        exit;
+    }
+
     redirect('home.php');
+    exit;
 }
 
 $error = '';
 
+/* Processa o formulário de login*/
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
     verify_csrf();
 
-    $email = strtolower(trim((string)($_POST['email'] ?? '')));
-    $senha = (string)($_POST['senha'] ?? '');
+    $email = strtolower(trim((string) ($_POST['email'] ?? '')));
+    $senha = (string) ($_POST['senha'] ?? '');
 
     if (
         !filter_var($email, FILTER_VALIDATE_EMAIL) ||
@@ -23,62 +77,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         strlen($senha) < 1
     ) {
         $error = 'E-mail ou senha inválidos.';
-    } else {
 
+    } else {
         $stmt = db()->prepare(
-            'SELECT
-                id,
-                nome,
-                email,
-                senha_hash,
-                tipo,
-                status_conta,
-                foto_url,
-                ativo
-             FROM alunos
-             WHERE email = :email
-             LIMIT 1'
+     'SELECT
+        id,
+        nome,
+        email,
+        senha_hash,
+        tipo,
+        status_conta
+     FROM alunos
+     WHERE email = :email
+     LIMIT 1'
         );
 
         $stmt->execute([
             'email' => $email
         ]);
 
-        $user = $stmt->fetch();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (
-            $user &&
-            (int)$user['ativo'] === 1 &&
-            password_verify($senha, $user['senha_hash'])
-        ) {
+       if (
+    $user &&
+    password_verify($senha, $user['senha_hash'])
+) {
 
-            if ($user['status_conta'] === 'pendente') {
-                $error = 'Sua conta ainda está aguardando aprovação.';
-            } elseif ($user['status_conta'] === 'recusado') {
-                $error = 'Sua conta não foi aprovada.';
-            } elseif ($user['status_conta'] === 'ativo') {
+    if ($user['status_conta'] === 'pendente') {
 
-                session_regenerate_id(true);
+        $error = 'Sua conta ainda está aguardando aprovação.';
 
-                $_SESSION['user_id'] = (int)$user['id'];
+    } elseif ($user['status_conta'] === 'recusado') {
+
+        $error = 'Sua conta não foi aprovada.';
+
+    } elseif ($user['status_conta'] === 'ativo') {
+
+        /*Inicia a sessão do usuário*/
+        session_regenerate_id(true);
+
+                $_SESSION['user_id'] = (int) $user['id'];
                 $_SESSION['user_name'] = $user['nome'];
                 $_SESSION['user_email'] = $user['email'];
                 $_SESSION['user_tipo'] = $user['tipo'];
                 $_SESSION['user_status'] = $user['status_conta'];
-                $nomeUsuario = $user['nome'] ?? 'Usuário';
-                
-                //-------Foto Vazia---------
-                $_SESSION['user_inicial'] = function_exists('mb_substr')
-                    ? mb_substr($nomeUsuario, 0, 1, 'UTF-8')
-                    : substr($nomeUsuario, 0, 1);
 
-                if (!empty($user['foto_url'])) {
-                    // Se o PDO trouxer como Resource, lê os bytes. Se trouxer como String, mantém.
-                    $dadosFoto = is_resource($user['foto_url']) ? stream_get_contents($user['foto_url']) : $user['foto_url'];
-                    $_SESSION['user_foto'] = base64_encode($dadosFoto);
-                } else {
-                    $_SESSION['user_foto'] = '';
-                }
+                $nomeUsuario = $user['nome'] ?? 'Usuário';
+
+                // Atualiza o último acesso
                 $update = db()->prepare(
                     'UPDATE alunos
                      SET ultimo_login = NOW()
@@ -86,16 +132,64 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 );
 
                 $update->execute([
-                    'id' => $user['id']
+                    'id' => (int) $user['id']
                 ]);
+
+                /* Redirecionamento do representante*/
                 if ($user['tipo'] === 'representante') {
+
+                    $stmt = db()->prepare("
+                        SELECT turma_id
+                        FROM turma_membros
+                        WHERE aluno_id = :usuario_id
+                          AND papel = 'representante'
+                        LIMIT 1
+                    ");
+
+                    $stmt->execute([
+                        'usuario_id' => (int) $user['id']
+                    ]);
+
+                    $turma = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                    if (!$turma) {
+                        redirect('criarTurmaSala.php');
+                    }
+
                     redirect('adminRepresentante.php');
                 }
+                /* Redirecionamento dos alunos */
+if ($user['tipo'] === 'aluno') {
+    $stmt = db()->prepare("
+        SELECT turma_id
+        FROM turma_membros
+        WHERE aluno_id = :usuario_id
+          AND papel = 'aluno'
+        LIMIT 1
+    ");
 
-                redirect('home.php');
+    $stmt->execute([
+        'usuario_id' => (int) $user['id']
+    ]);
+
+    $turma = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$turma) {
+        redirect('entrarTurma.php');
+    }
+
+    redirect('home.php');
+}
+
+/* Redirecionamento dos demais usuários */
+redirect('home.php');
+            } else {
+
+                $error = 'Não foi possível acessar esta conta.';
             }
-        }
-        if ($error === '') {
+
+        } else {
+
             $error = 'E-mail ou senha inválidos.';
         }
     }
@@ -182,7 +276,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <a href="#" class="forgot-password">Esqueci minha senha</a>
             <div class="register-link">
                 <span>Não tem uma conta?</span>
-                <a href="register.php">Cadastre-se</a>
+                <a href="cadastro.php">Cadastre-se</a>
             </div>
         </div>
     </main>

@@ -1,15 +1,18 @@
 <?php
-
 declare(strict_types=1);
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
 
 require_once __DIR__ . '/Settings/auth.php';
 require_once 'Settings/permissoes.php';
 
 require_role(['representante']);
+require_representante_com_turma();
 
 $usuarioId = (int) $_SESSION['user_id'];
 
-// ==================== TURMAS ====================
+//  TURMAS 
 $sql = "
     SELECT
         t.id,
@@ -31,7 +34,7 @@ $stmt->execute([':aluno_id' => $usuarioId]);
 $turmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
-// ==================== ATIVIDADES ====================
+// ATIVIDADES
 $sqlAtividades = "
     SELECT COUNT(*)
     FROM atividades a
@@ -48,24 +51,24 @@ $stmt->execute([':aluno_id' => $usuarioId]);
 $atividades = (int) $stmt->fetchColumn();
 
 
-// ==================== AVISOS ====================
+// AVISOS 
 $sqlAvisos = "
     SELECT COUNT(*)
-    FROM avisos a
+    FROM comunicados c
     LEFT JOIN turma_disciplinas td
-        ON td.id = a.turma_disciplina_id
+        ON td.id = c.turma_disciplina_id
     INNER JOIN turma_membros tm
-        ON tm.turma_id = COALESCE(td.turma_id, a.turma_id)
+        ON tm.turma_id = COALESCE(td.turma_id, c.turma_id)
     WHERE tm.aluno_id = :aluno_id
       AND tm.papel = 'representante'
+      AND c.conteudo = 'aviso'
 ";
 
 $stmt = db()->prepare($sqlAvisos);
 $stmt->execute([':aluno_id' => $usuarioId]);
 $avisos = (int) $stmt->fetchColumn();
 
-
-// ==================== EVENTOS ====================
+//  EVENTOS 
 $sqlEventos = "
     SELECT COUNT(*)
     FROM eventos e
@@ -78,7 +81,6 @@ $sqlEventos = "
 $stmt = db()->prepare($sqlEventos);
 $stmt->execute([':aluno_id' => $usuarioId]);
 $eventos = (int) $stmt->fetchColumn();
-
 ?>
 
 <!doctype html>

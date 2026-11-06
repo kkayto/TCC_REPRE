@@ -202,33 +202,12 @@ function formatarTurno(?string $turno): string
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     >
     <link rel="stylesheet" href="atividadesTurma.css">
+        <link rel="stylesheet" href="Styles/root.css">
     </head>
 
 <body>
 
-<nav class="navbar">
-    <a href="home.php" class="logo">REPRE</a>
-
-    <div class="nav-links">
-        <a href="home.php">
-            <i class="fa-solid fa-house"></i>
-            Início
-        </a>
-
-        <a href="adminRepresentante.php">
-            <i class="fa-solid fa-people-group"></i>
-            Representante
-        </a>
-    </div>
-
-    <div class="nav-direita">
-        <a href="perfil.php" class="perfil-link" aria-label="Perfil">
-            <i class="fa-solid fa-user"></i>
-        </a>
-
-        <a href="logout.php" class="btn-sair">Sair</a>
-    </div>
-</nav>
+    <div id="headerSet"></div>
 
 <main class="conteudo">
 
@@ -471,6 +450,6 @@ function formatarTurno(?string $turno): string
     </section>
 
 </main>
-
+    <script src="Script/headerSet.js"></script>
 </body>
 </html>

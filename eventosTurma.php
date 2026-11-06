@@ -116,25 +116,14 @@ foreach ($eventos as $evento) {
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
+    <link rel="stylesheet" href="Styles/root.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="eventosTurma.css">
 </head>
 
 <body>
-
-    <nav class="navbar">
-        <a class="logo" href="home.php">REPRE</a>
-
-        <a
-            class="btn-voltar"
-            href="adminTurma.php?id=<?= (int) $turmaId ?>"
-        >
-            <i class="fa-solid fa-arrow-left"></i>
-            Voltar à turma
-        </a>
-    </nav>
-
+<div id="headerSet"></div>
+   
     <main class="container">
 
         <header class="cabecalho">
@@ -314,6 +303,6 @@ foreach ($eventos as $evento) {
         </section>
 
     </main>
-
+    <script src="Script/headerSet.js"></script>
 </body>
 </html>

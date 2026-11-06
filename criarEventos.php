@@ -196,10 +196,10 @@ if ($eventoId !== null) {
 } else {
     $stmt = $pdo->prepare("
         INSERT INTO eventos
-            (turma_id, atividade_id, criador_id, titulo,
+            (turma_id, criador_id, titulo,
              descricao, tipo, inicio, fim)
         VALUES
-            (:turma_id, NULL, :criador_id, :titulo,
+            (:turma_id, :criador_id, :titulo,
              :descricao, :tipo, :inicio, :fim)
     ");
 

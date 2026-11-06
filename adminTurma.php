@@ -6,6 +6,7 @@ error_reporting(E_ALL);
 require_once __DIR__ . '/Settings/auth.php';
 
 require_role(['representante']);
+require_representante_com_turma();
 
 $usuarioId = (int) $_SESSION['user_id'];
 
@@ -163,70 +164,14 @@ $totalEventos = 0;
 >
 
 
+    <link rel="stylesheet" href="Styles/root.css">
 </head>
 
 <body>
 
 <div class="pagina">
 
-<!-- NAVBAR -->
-
-<nav class="navbar">
-
-    <a
-        href="home.php"
-        class="logo"
-    >
-        REPRE
-    </a>
-
-    <div class="nav-links">
-
-        <a href="home.php">
-
-            <i class="fa-solid fa-house"></i>
-
-            Início
-
-        </a>
-
-        <a
-            href="adminRepresentante.php"
-            class="ativo"
-        >
-
-            <i class="fa-solid fa-people-group"></i>
-
-            Representante
-
-        </a>
-
-    </div>
-
-    <div class="nav-direita">
-
-        <a
-            href="perfil.php"
-            class="perfil-link"
-        >
-
-            <i class="fa-solid fa-user"></i>
-
-        </a>
-
-        <a
-            href="logout.php"
-            class="btn-sair"
-        >
-
-            Sair
-
-        </a>
-
-    </div>
-
-</nav>
-
+    <div id="headerSet"></div>
 
 <!-- CONTEÚDO -->
 
@@ -448,35 +393,6 @@ $totalEventos = 0;
             </a>
 
 
-            <!-- DISCIPLINAS -->
-
-<a
-    href="diciplinasTurma.php?id=<?= (int) $turmaId ?>"
-    class="acao-card"
->
-    <div class="acao-icone roxo">
-
-        <i class="fa-solid fa-book"></i>
-
-    </div>
-
-    <div>
-
-        <h3>
-            Disciplinas
-        </h3>
-
-        <p>
-            Veja as disciplinas da turma.
-        </p>
-
-    </div>
-
-    <i class="fa-solid fa-chevron-right seta"></i>
-
-</a>
-
-
             <!-- ATIVIDADES -->
 
             <a
@@ -507,7 +423,7 @@ $totalEventos = 0;
             </a>
 
 
-            <!-- AVISOS -->
+            <!-- AVISOS 
 
            <a
     href="avisosTurma.php?id=<?= (int) $turmaId ?>"
@@ -528,7 +444,7 @@ $totalEventos = 0;
     </div>
 
     <i class="fa-solid fa-chevron-right seta"></i>
-</a>
+</a> -->
 
 
             <!-- EVENTOS -->
@@ -583,6 +499,7 @@ $totalEventos = 0;
 
 </div>
 
+    <script src="Script/headerSet.js"></script>
 </body>
 
 </html>
