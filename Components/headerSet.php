@@ -83,6 +83,7 @@ body {
     display: flex;
     align-items: center;
     font-size: 24px;
+    gap:15px;
   }
 
   .header-options button {
@@ -99,33 +100,60 @@ body {
     padding: 5px;
     border-radius: 8px;
     font-weight: 600;
+    margin:10px;
   }
 
-  .bell {
+ .notification-container {
     position: relative;
-    width: 44px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    font-size: 21px;
-    cursor: pointer;
-    transition: 0.25s ease;
-  }
+}
 
-  .bell::after {
+.bell {
+    border: none;
+    background: transparent;
+    color: inherit;
+}
+
+.notification-popup {
+    display: none;
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    width: 320px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 18px 14px;
+    background-color: var(--white);
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--border);
+    z-index: 9999;
+}
+
+.notification-popup.active {
+    display: flex !important;
+    flex-direction: column;
+    gap: 12px;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+  
+.notification-popup::before {
     content: "";
     position: absolute;
-    top: 6px;
-    right: 6px;
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background-color: #e74c3c;
-    border: 2px solid white;
-  }
-
+    top: -10px;
+    right: 12px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid var(--white);
+}
+.notification-popup h3 {
+    font-size: 21px;
+    color: var(--roxo);
+    font-weight: 700;
+    margin: 0 0 10px 0;
+}
   .profile {
     width: 30px;
     height: 30px;
@@ -178,9 +206,7 @@ body {
     left: 0;
     width: 100%;
     height: auto;
-
     background: white;
-
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -191,7 +217,6 @@ body {
     transform: translateY(100%);
     /* Manda o menu lá pra baixo, fica invisivel */
     transition: 0.3s ease;
-
     z-index: 1000;
   }
 
@@ -199,7 +224,7 @@ body {
   .nav-right {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 20px;
     text-align: center;
     align-items: center;
   }
@@ -423,9 +448,20 @@ body {
   <div class="header-options">
     <button id="menu-btn">☰</button>
 
-    <span class="bell">
-      <i class="fa-solid fa-bell"></i>
-    </span>
+   <div class="notification-container">
+
+    <button type="button" class="bell" id="notificationBtn">
+        <i class="fa-solid fa-bell"></i>
+    </button>
+
+    <div class="notification-popup" id="notificationPopup">
+        <h3>Notificações</h3>
+
+        <div class="notification-list">
+        </div>
+    </div>
+
+</div>
 
     <a href="profile.php">
       <!-- Se a variável de imagem NÃO estiver vazia e tiver um tamanho mínimo aceitável -->
