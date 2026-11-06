@@ -9,6 +9,7 @@ const DB_PASS = 'Miranha555';
 function db(): PDO
 {
     static $pdo = null;
+
 if ($pdo === null) {
         $dsn = 'mysql:host=' . DB_HOST .
                ';port=3306' .
@@ -21,5 +22,6 @@ if ($pdo === null) {
             PDO::ATTR_EMULATE_PREPARES => false,
         ]);
     }
+
     return $pdo;
 }
