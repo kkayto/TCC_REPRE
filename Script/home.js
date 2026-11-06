@@ -52,9 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-   
-
-/* CALENDÁRIO */
+    
 // CALENDÁRIO
     const tituloMes = document.getElementById('month');
     const diasContainer = document.getElementById('calendarDays');
@@ -143,36 +141,29 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const dataTitulo = document.createElement('strong');
-        dataTitulo.textContent = dataBrasileira(data);
-        informacoesEvento.appendChild(dataTitulo);
+      lista.forEach((evento) => {
+    const item = document.createElement('div');
+    item.className = 'calendar-event-info';
 
-        lista.forEach((evento) => {
-            const item = document.createElement('div');
-            item.className = 'calendar-event-info';
+   item.innerHTML = `
+     <h3>${evento.titulo || 'Evento'}</h3>
 
-            const titulo = document.createElement('strong');
-            titulo.textContent = evento.titulo || 'Evento';
-            item.appendChild(titulo);
+        <div class="event-detail">
+            <span class="detail-label">No dia: <h4>${dataBrasileira(data)}</h4> </span> 
+        </div>
 
-            if (evento.descricao) {
-                const descricao = document.createElement('p');
-                descricao.textContent = evento.descricao;
-                item.appendChild(descricao);
-            }
+        <div class="event-detail">
+            <span class="detail-label">Horário: </span>
+            <h4>${evento.inicio ? evento.inicio.substring(11, 16) : 'Não informado'}</h4>
+        </div>
 
-            if (
-                evento.inicio &&
-                String(evento.inicio).length >= 16
-            ) {
-                const horario = document.createElement('p');
-                horario.textContent =
-                    `Início: ${String(evento.inicio).substring(11, 16)}`;
-                item.appendChild(horario);
-            }
-
-            informacoesEvento.appendChild(item);
-        });
+        <div class="event-detail">
+            <span class="detail-label">Descrição: </span>
+            <span>${evento.descricao || 'Sem descrição'}</span>
+        </div>
+    `;
+    informacoesEvento.appendChild(item);
+});
     }
 
     function renderizarCalendario() {
