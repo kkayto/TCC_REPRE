@@ -1,0 +1,352 @@
+
+:root {
+    --main-purple: #584391;
+    --brand-purple: rgba(109, 66, 219, 1);
+    --light-purple: #7351df;
+    --soft-purple: #f1edff;
+
+    --title-blue: #17245c;
+    --text-blue: #101d52;
+    --secondary-blue: #59658c;
+
+    --background: #f0eef8;
+    --white: #ffffff;
+    --border: #e2e3ef;
+
+    --shadow: 0 4px 20px rgba(31, 37, 70, .06);
+    --shadow-hover: 0 8px 28px rgba(109, 66, 219, .12);
+    --button-shadow: 0 6px 20px rgba(88, 67, 145, 0.3);
+
+    --radius: 14px;
+    --input-radius: 16px;
+    --card-radius: 18px;
+    --large-radius: 20px;
+    --pill-radius: 100px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    position: relative;
+    overflow-x: hidden;
+    font-family: 'Montserrat', sans-serif;
+    background: var(--background);
+}
+
+/* DECORAÇÕES DO FUNDO */
+
+.decoracao {
+    position: fixed;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.decoracao-superior {
+    width: 330px;
+    height: 330px;
+    top: -190px;
+    left: -100px;
+    background: #dcd2f7;
+    border-radius: 45% 55% 62% 38%;
+    transform: rotate(25deg)
+}
+
+.decoracao-inferior {
+    width: 420px;
+    height: 420px;
+    right: -170px;
+    bottom: -220px;
+    background: #c9baf2;
+    border-radius: 55% 45% 35% 65%;
+    transform: rotate(-30deg);
+}
+
+/* LOGO DE MARCA D'AGUA*/
+
+.marca-dagua {
+    position: fixed;
+    width: 430px;
+    height: 430px;
+    right: -75px;
+    bottom: -100px;
+    z-index: 0;
+    pointer-events: none;
+    opacity: .09;
+}
+
+.marca-dagua img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: grayscale(1);
+    mix-blend-mode: multiply;
+}
+
+/* ÁREA PRINCIPAL */
+
+.pagina-turma {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+}
+
+/* CARD */
+
+.turma-card {
+    width: min(100%, 470px);
+    padding: 38px 36px 28px;
+    background: var(--white);
+    border: 1px solid rgba(255, 255, 255, .9);
+    border-radius: var(--large-radius);
+    box-shadow: 0 12px 40px rgba(31, 37, 70, .09);
+    position: relative;
+    z-index: 2;
+}
+
+/* LOGO */
+
+.turma-icon {
+    width: 75px;
+    height: 75px;
+    margin: 0 auto 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--soft-purple);
+    border-radius: 23px;
+    overflow: hidden;
+}
+
+.turma-icon img {
+    width: 100%;
+    height: 100%;
+    padding: 9px;
+    object-fit: contain;
+    display: block;
+}
+
+/* CABEÇALHO */
+
+.turma-header {
+    text-align: center;
+}
+
+.subtitulo {
+    display: inline-block;
+    color: var(--brand-purple);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+}
+
+.turma-header h1 {
+    color: var(--title-blue);
+    font-size: 25px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.descricao {
+    color: var(--secondary-blue);
+    font-size: 13px;
+    line-height: 1.8;
+    margin-bottom: 30px;
+}
+
+/* FORMULÁRIO */
+
+.campo {
+    margin-bottom: 22px;
+}
+
+.campo label {
+    display: block;
+    color: var(--text-blue);
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.input-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 0 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--input-radius);
+    background: var(--white);
+    transition: .3s;
+}
+
+.input-container:focus-within {
+    border-color: var(--brand-purple);
+    box-shadow: 0 0 0 3px rgba(109, 66, 219, .10);
+}
+
+.input-container i {
+    color: var(--brand-purple);
+    font-size: 16px;
+}
+
+.input-container input {
+    width: 100%;
+    height: 52px;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--text-blue);
+    font-family: inherit;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+.input-container input::placeholder {
+    color: #a6a8bd;
+    text-transform: none;
+}
+
+.campo-ajuda {
+    display: block;
+    color: var(--secondary-blue);
+    font-size: 10px;
+    margin-top: 9px;
+}
+
+/* BOTÃO */
+
+.botao-entrar {
+    width: 100%;
+    height: 52px;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 13px;
+
+    border: none;
+    border-radius: var(--radius);
+    background: var(--brand-purple);
+    color: var(--white);
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+
+    box-shadow: var(--button-shadow);
+    cursor: pointer;
+    transition: .3s;
+}
+
+.botao-entrar:hover {
+    background: var(--main-purple);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+}
+
+.botao-entrar i {
+    transition: .3s;
+}
+
+.botao-entrar:hover i {
+    transform: translateX(5px);
+}
+
+/* AVISO DE SEGURANÇA */
+
+.aviso {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 15px;
+    margin-top: 27px;
+    border-radius: var(--radius);
+    background: var(--soft-purple);
+}
+
+.aviso-icon {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e5dcff;
+    border-radius: 11px;
+    color: var(--brand-purple);
+    font-size: 15px;
+}
+
+.aviso-texto strong {
+    display: block;
+    color: var(--title-blue);
+    font-size: 11px;
+    margin-bottom: 4px;
+}
+
+.aviso-texto p {
+    color: var(--secondary-blue);
+    font-size: 10px;
+    line-height: 1.6;
+}
+
+/* ASSINATURA */
+
+.assinatura {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 7px;
+    margin-top: 25px;
+    color: var(--main-purple);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.assinatura i {
+    color: var(--light-purple);
+    font-size: 13px;
+}
+
+/* RESPONSIVIDADE KKKKK TA PODRE */
+
+@media (max-width: 600px) {
+    body {
+        padding: 25px 15px;
+    }
+
+    .turma-card {
+        padding: 32px 23px 25px;
+    }
+
+    .turma-header h1 {
+        font-size: 22px;
+    }
+
+    .marca-dagua {
+        width: 250px;
+        height: 250px;
+        right: -100px;
+        bottom: -40px;
+    }
+
+    .decoracao-inferior {
+        width: 250px;
+        height: 250px;
+    }
+}

@@ -378,6 +378,20 @@ body {
     min-width: 0;
 }
 
+/* ALTERNÂNCIA ENTRE OS CANAIS */
+
+.conteudo-canal {
+    display: none;
+}
+
+.conteudo-canal.ativo {
+    display: block;
+}
+
+.canal {
+    cursor: pointer;
+}
+
 
 /*CABEÇALHO DO GRÊMIO */
 
